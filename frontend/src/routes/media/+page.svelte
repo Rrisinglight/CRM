@@ -1,0 +1,128 @@
+<script>
+	import { onMount } from 'svelte';
+	import { auth } from '$lib/stores';
+
+	let mediaList = [];
+	let loading = true;
+	let search = '';
+	let category = '';
+
+	onMount(() => {
+		loadMedia();
+	});
+
+	async function loadMedia() {
+		loading = true;
+		try {
+			const params = new URLSearchParams();
+			if (search) params.append('search', search);
+			if (category) params.append('category', category);
+
+			const response = await fetch(`/api/media/?${params}`, {
+				headers: { 'Authorization': `Bearer ${$auth.token}` }
+			});
+			mediaList = await response.json();
+		} catch (e) {
+			console.error('Failed to load media:', e);
+		}
+		loading = false;
+	}
+
+	function handleSearch() {
+		loadMedia();
+	}
+</script>
+
+<svelte:head>
+	<title>СМИ | CRM</title>
+</svelte:head>
+
+<div class="p-8">
+	<div class="flex items-center justify-between mb-8">
+		<h1 class="text-2xl font-bold">СМИ</h1>
+		<a href="/media/new" class="px-4 py-2 bg-primary-500 hover:bg-primary-600 rounded-lg transition-colors">
+			+ Добавить СМИ
+		</a>
+	</div>
+
+	<!-- Search and filters -->
+	<div class="flex gap-4 mb-6">
+		<input
+			type="text"
+			bind:value={search}
+			on:keyup={(e) => e.key === 'Enter' && handleSearch()}
+			placeholder="Поиск по названию..."
+			class="flex-1 px-4 py-3 bg-surface-700 border border-surface-600 rounded-lg focus:outline-none focus:border-primary-500"
+		/>
+		<select
+			bind:value={category}
+			on:change={handleSearch}
+			class="px-4 py-3 bg-surface-700 border border-surface-600 rounded-lg"
+		>
+			<option value="">Все категории</option>
+			<option value="деловое">Деловое</option>
+			<option value="lifestyle">Lifestyle</option>
+			<option value="IT">IT</option>
+			<option value="региональное">Региональное</option>
+		</select>
+		<button on:click={handleSearch} class="px-6 py-3 bg-surface-600 hover:bg-surface-500 rounded-lg">
+			Найти
+		</button>
+	</div>
+
+	{#if loading}
+		<div class="flex justify-center py-20">
+			<div class="animate-spin w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full"></div>
+		</div>
+	{:else if mediaList.length === 0}
+		<div class="text-center py-20 text-surface-400">
+			СМИ не найдены
+		</div>
+	{:else}
+		<div class="grid grid-cols-3 gap-4">
+			{#each mediaList as media}
+				<div class="bg-surface-800 rounded-lg overflow-hidden hover:bg-surface-750 transition-colors">
+					<div class="p-6">
+						<div class="flex items-start gap-4">
+							{#if media.logo_url}
+								<img src={media.logo_url} alt="" class="w-16 h-16 rounded-lg object-cover" />
+							{:else}
+								<div class="w-16 h-16 rounded-lg bg-purple-500/30 flex items-center justify-center">
+									<svg class="w-8 h-8 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+									</svg>
+								</div>
+							{/if}
+							<div class="flex-1 min-w-0">
+								<h3 class="font-semibold">{media.name}</h3>
+								{#if media.category}
+									<span class="text-xs px-2 py-0.5 bg-surface-600 rounded mt-1 inline-block">
+										{media.category}
+									</span>
+								{/if}
+								{#if media.description}
+									<p class="text-sm text-surface-400 mt-2 line-clamp-2">{media.description}</p>
+								{/if}
+							</div>
+						</div>
+						<div class="mt-4 flex gap-2">
+							{#if media.website_url}
+								<a 
+									href={media.website_url}
+									target="_blank"
+									class="text-xs px-3 py-1.5 bg-surface-600 rounded hover:bg-surface-500"
+								>
+									Сайт
+								</a>
+							{/if}
+							<span class="text-xs px-3 py-1.5 bg-surface-600 rounded">
+								{media.language === 'RU' ? '🇷🇺 RU' : '🇬🇧 EN'}
+							</span>
+						</div>
+					</div>
+				</div>
+			{/each}
+		</div>
+	{/if}
+</div>
+

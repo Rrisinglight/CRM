@@ -1,0 +1,84 @@
+<script>
+	import { goto } from '$app/navigation';
+	import { auth } from '$lib/stores';
+
+	let email = '';
+	let password = '';
+	let error = '';
+	let loading = false;
+
+	async function handleSubmit() {
+		error = '';
+		loading = true;
+
+		try {
+			await auth.login(email, password);
+			goto('/tasks');
+		} catch (e) {
+			error = 'Неверный email или пароль';
+		}
+
+		loading = false;
+	}
+</script>
+
+<div class="min-h-screen flex items-center justify-center p-4">
+	<div class="w-full max-w-md">
+		<div class="bg-surface-800 rounded-xl p-8 shadow-xl">
+			<h1 class="text-2xl font-bold text-center mb-8">CRM для журналистов</h1>
+
+			<form on:submit|preventDefault={handleSubmit} class="space-y-6">
+				{#if error}
+					<div class="p-3 bg-red-500/20 border border-red-500/50 rounded-lg text-red-400 text-sm">
+						{error}
+					</div>
+				{/if}
+
+				<div>
+					<label for="email" class="block text-sm font-medium mb-2">Email</label>
+					<input
+						id="email"
+						type="email"
+						bind:value={email}
+						required
+						class="w-full px-4 py-3 bg-surface-700 border border-surface-600 rounded-lg focus:outline-none focus:border-primary-500 transition-colors"
+						placeholder="your@email.com"
+					/>
+				</div>
+
+				<div>
+					<label for="password" class="block text-sm font-medium mb-2">Пароль</label>
+					<input
+						id="password"
+						type="password"
+						bind:value={password}
+						required
+						class="w-full px-4 py-3 bg-surface-700 border border-surface-600 rounded-lg focus:outline-none focus:border-primary-500 transition-colors"
+						placeholder="••••••••"
+					/>
+				</div>
+
+				<button
+					type="submit"
+					disabled={loading}
+					class="w-full py-3 bg-primary-500 hover:bg-primary-600 disabled:opacity-50 rounded-lg font-medium transition-colors"
+				>
+					{#if loading}
+						<span class="flex items-center justify-center gap-2">
+							<span class="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></span>
+							Вход...
+						</span>
+					{:else}
+						Войти
+					{/if}
+				</button>
+			</form>
+
+			<p class="mt-6 text-center text-sm text-surface-400">
+				Нет аккаунта?
+				<a href="/register" class="text-primary-400 hover:text-primary-300">Зарегистрироваться</a>
+			</p>
+		</div>
+	</div>
+</div>
+
