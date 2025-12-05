@@ -1,7 +1,7 @@
 <script>
 	import { dndzone } from 'svelte-dnd-action';
 	import { flip } from 'svelte/animate';
-	import { tasks } from '$lib/stores';
+	import { tasks as tasksStore } from '$lib/stores';
 	import TaskCard from './TaskCard.svelte';
 	import CommentModal from './CommentModal.svelte';
 
@@ -45,7 +45,15 @@
 				showCommentModal = true;
 			} else {
 				// Forward move - no comment needed
-				await tasks.changeStatus(movedTask.id, column.id);
+				try {
+					await tasksStore.changeStatus(movedTask.id, column.id);
+				} catch (err) {
+					console.error('Failed to change status:', err);
+					alert(err.message || 'Ошибка изменения статуса');
+					// Reload to restore correct positions
+					tasksStore.load();
+					return;
+				}
 			}
 		}
 		
@@ -56,15 +64,22 @@
 		const { comment, postponeReason, postponeResumeDate } = event.detail;
 		
 		if (pendingMove) {
-			await tasks.changeStatus(
-				pendingMove.taskId, 
-				pendingMove.toStatus, 
-				comment,
-				{
-					postpone_reason: postponeReason,
-					postpone_resume_date: postponeResumeDate
-				}
-			);
+			try {
+				await tasksStore.changeStatus(
+					pendingMove.taskId, 
+					pendingMove.toStatus, 
+					comment,
+					{
+						postpone_reason: postponeReason,
+						postpone_resume_date: postponeResumeDate
+					}
+				);
+			} catch (err) {
+				console.error('Failed to change status:', err);
+				alert(err.message || 'Ошибка изменения статуса');
+				// Reload to restore correct positions
+				tasksStore.load();
+			}
 		}
 		
 		showCommentModal = false;
@@ -73,7 +88,7 @@
 
 	function handleCommentCancel() {
 		// Reload tasks to restore original positions
-		tasks.load();
+		tasksStore.load();
 		showCommentModal = false;
 		pendingMove = null;
 	}
@@ -85,7 +100,7 @@
 			<div class="w-3 h-3 rounded-full {column.color}"></div>
 			<span>{column.label}</span>
 		</div>
-		<span class="text-sm text-surface-400 bg-surface-700 px-2 py-0.5 rounded">
+		<span class="text-sm text-gray-500 bg-gray-100 px-2 py-0.5 rounded">
 			{tasks.length}
 		</span>
 	</div>
@@ -95,7 +110,7 @@
 		use:dndzone={{
 			items: tasks,
 			flipDurationMs,
-			dropTargetStyle: { outline: '2px dashed rgba(255,255,255,0.3)' }
+			dropTargetStyle: { outline: '2px dashed rgba(59,130,246,0.5)' }
 		}}
 		on:consider={handleDndConsider}
 		on:finalize={handleDndFinalize}

@@ -60,7 +60,7 @@
 </script>
 
 <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50" on:click={cancel}>
-	<div class="bg-surface-800 rounded-lg w-full max-w-md p-6" on:click|stopPropagation>
+	<div class="bg-white rounded-lg w-full max-w-md p-6" on:click|stopPropagation>
 		<h3 class="text-lg font-semibold mb-4">Комментарий к перемещению</h3>
 
 		<div class="space-y-4">
@@ -70,28 +70,28 @@
 					type="text"
 					bind:value={comment}
 					placeholder="Введите причину перемещения..."
-					class="w-full px-3 py-2 bg-surface-700 border border-surface-600 rounded-lg focus:outline-none focus:border-primary-500"
+					class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:border-primary-500"
 				/>
 			</div>
 
 			<!-- Postponed specific fields -->
 			{#if toStatus === 'postponed'}
-				<div class="space-y-3 p-3 bg-surface-700/50 rounded-lg">
+				<div class="space-y-3 p-3 bg-gray-100/50 rounded-lg">
 					<div>
-						<label class="text-sm text-surface-400 mb-1 block">Причина остановки</label>
+						<label class="text-sm text-gray-500 mb-1 block">Причина остановки</label>
 						<input
 							type="text"
 							bind:value={postponeReason}
 							placeholder="Почему задача отложена..."
-							class="w-full px-3 py-2 bg-surface-700 border border-surface-600 rounded-lg"
+							class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg"
 						/>
 					</div>
 					<div>
-						<label class="text-sm text-surface-400 mb-1 block">Дата возобновления</label>
+						<label class="text-sm text-gray-500 mb-1 block">Дата возобновления</label>
 						<input
 							type="date"
 							bind:value={postponeResumeDate}
-							class="w-full px-3 py-2 bg-surface-700 border border-surface-600 rounded-lg"
+							class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg"
 						/>
 					</div>
 				</div>
@@ -99,13 +99,13 @@
 
 			<!-- Templates -->
 			<div>
-				<p class="text-sm text-surface-400 mb-2">Шаблоны:</p>
+				<p class="text-sm text-gray-500 mb-2">Шаблоны:</p>
 				<div class="flex flex-wrap gap-2">
 					{#each templates as template}
 						<button
 							type="button"
 							on:click={() => selectTemplate(template)}
-							class="px-2 py-1 text-sm bg-surface-700 hover:bg-surface-600 rounded transition-colors"
+							class="px-2 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded transition-colors"
 						>
 							{template}
 						</button>
@@ -116,7 +116,7 @@
 			<!-- Recent comments -->
 			{#if recentComments.length > 0}
 				<div>
-					<p class="text-sm text-surface-400 mb-2">Недавние:</p>
+					<p class="text-sm text-gray-500 mb-2">Недавние:</p>
 					<div class="flex flex-wrap gap-2">
 						{#each recentComments as recent}
 							<button
@@ -136,7 +136,7 @@
 				<button
 					type="button"
 					on:click={cancel}
-					class="px-4 py-2 text-surface-400 hover:text-white transition-colors"
+					class="px-4 py-2 text-gray-500 hover:text-white transition-colors"
 				>
 					Отмена
 				</button>

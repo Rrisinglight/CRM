@@ -2,18 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom styles */
+/* Custom styles - Light Theme */
 :root {
-	--color-surface-50: 250 250 250;
-	--color-surface-100: 245 245 245;
-	--color-surface-200: 229 229 229;
-	--color-surface-300: 212 212 212;
-	--color-surface-400: 163 163 163;
-	--color-surface-500: 115 115 115;
-	--color-surface-600: 82 82 82;
-	--color-surface-700: 64 64 64;
-	--color-surface-800: 38 38 38;
-	--color-surface-900: 23 23 23;
+	/* Surface colors (light theme) */
+	--color-surface-50: 255 255 255;
+	--color-surface-100: 249 250 251;
+	--color-surface-200: 243 244 246;
+	--color-surface-300: 229 231 235;
+	--color-surface-400: 156 163 175;
+	--color-surface-500: 107 114 128;
+	--color-surface-600: 75 85 99;
+	--color-surface-700: 55 65 81;
+	--color-surface-800: 31 41 55;
+	--color-surface-900: 17 24 39;
+	
+	/* Primary colors (blue) */
+	--color-primary-50: 239 246 255;
+	--color-primary-100: 219 234 254;
+	--color-primary-200: 191 219 254;
+	--color-primary-300: 147 197 253;
+	--color-primary-400: 96 165 250;
+	--color-primary-500: 59 130 246;
+	--color-primary-600: 37 99 235;
+	--color-primary-700: 29 78 216;
+	--color-primary-800: 30 64 175;
+	--color-primary-900: 30 58 138;
 }
 
 /* Task card animations */
@@ -55,15 +68,15 @@
 }
 
 .search-token.user {
-	@apply bg-blue-500/20 text-blue-400;
+	@apply bg-blue-100 text-blue-700;
 }
 
 .search-token.media {
-	@apply bg-purple-500/20 text-purple-400;
+	@apply bg-purple-100 text-purple-700;
 }
 
 .search-token.role {
-	@apply bg-green-500/20 text-green-400;
+	@apply bg-green-100 text-green-700;
 }
 
 /* Unread indicator dot */
@@ -73,20 +86,20 @@
 
 /* Kanban column */
 .kanban-column {
-	@apply flex flex-col bg-surface-800 rounded-lg min-h-[500px];
+	@apply flex flex-col bg-white rounded-lg min-h-[500px] shadow-sm border border-gray-200;
 }
 
 .kanban-column-header {
-	@apply p-3 border-b border-surface-700 font-semibold flex items-center justify-between;
+	@apply p-3 border-b border-gray-200 font-semibold flex items-center justify-between text-gray-800;
 }
 
 .kanban-column-content {
-	@apply flex-1 p-2 space-y-2 overflow-y-auto;
+	@apply flex-1 p-2 space-y-2 overflow-y-auto bg-gray-50;
 }
 
 /* Sidebar */
 .sidebar {
-	@apply w-64 bg-surface-800 h-screen fixed left-0 top-0 flex flex-col;
+	@apply w-64 bg-white h-screen fixed left-0 top-0 flex flex-col border-r border-gray-200 shadow-sm;
 }
 
 .sidebar.collapsed {
@@ -94,10 +107,10 @@
 }
 
 .sidebar-item {
-	@apply flex items-center gap-3 px-4 py-3 hover:bg-surface-700 cursor-pointer transition-colors;
+	@apply flex items-center gap-3 px-4 py-3 hover:bg-gray-100 cursor-pointer transition-colors text-gray-700;
 }
 
 .sidebar-item.active {
-	@apply bg-surface-700 border-l-4 border-primary-500;
+	@apply bg-blue-50 border-l-4 border-blue-500 text-blue-700;
 }
 

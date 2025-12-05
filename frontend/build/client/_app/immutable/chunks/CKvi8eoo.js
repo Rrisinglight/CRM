@@ -1,0 +1,1 @@
+const r="http://127.0.0.1:8000";async function c(n,e={}){const o=`${r}${n}`,t={...e,headers:{...e.headers}};e.body&&typeof e.body=="string"&&(t.headers["Content-Type"]="application/json");{const a=localStorage.getItem("token");a&&(t.headers.Authorization=`Bearer ${a}`)}return await fetch(o,t)}export{r as A,c as a};

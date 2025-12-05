@@ -12,9 +12,9 @@
 	};
 
 	const typeColors = {
-		article: 'bg-blue-500/20 text-blue-400',
-		recommendation: 'bg-green-500/20 text-green-400',
-		cover_letter: 'bg-amber-500/20 text-amber-400'
+		article: 'bg-blue-100 text-blue-700',
+		recommendation: 'bg-green-100 text-green-700',
+		cover_letter: 'bg-amber-100 text-amber-700'
 	};
 
 	async function handleTake() {
@@ -24,11 +24,11 @@
 
 <div class="space-y-3">
 	<!-- Client name (title) -->
-	<h4 class="font-semibold text-lg">{task.title}</h4>
+	<h4 class="font-semibold text-lg text-gray-800">{task.title}</h4>
 
 	<!-- Description -->
 	{#if task.description}
-		<p class="text-sm text-surface-300 line-clamp-2">{task.description}</p>
+		<p class="text-sm text-gray-600 line-clamp-2">{task.description}</p>
 	{/if}
 
 	<!-- Task type badge -->
@@ -42,19 +42,19 @@
 			{#if task.media.logo_url}
 				<img src={task.media.logo_url} alt={task.media.name} class="w-5 h-5 rounded" />
 			{/if}
-			<span class="text-sm text-surface-300">{task.media.name}</span>
+			<span class="text-sm text-gray-600">{task.media.name}</span>
 		</div>
 	{/if}
 
 	<!-- Footer: Language + Time -->
-	<div class="flex items-center justify-between pt-2 border-t border-surface-600">
+	<div class="flex items-center justify-between pt-2 border-t border-gray-200">
 		<!-- Language flag -->
-		<span class="text-xs px-2 py-1 bg-surface-600 rounded">
+		<span class="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded">
 			{task.language === 'RU' ? '🇷🇺 RU' : '🇬🇧 EN'}
 		</span>
 
 		<!-- Time in stage -->
-		<div class="flex items-center gap-1 text-sm" class:time-badge={true} class:text-red-500={isOverdue}>
+		<div class="flex items-center gap-1 text-sm text-gray-600" class:time-badge={true} class:text-red-500={isOverdue}>
 			<svg class="w-4 h-4" class:text-red-500={isOverdue} fill="none" stroke="currentColor" viewBox="0 0 24 24">
 				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
 			</svg>
@@ -65,7 +65,7 @@
 	<!-- Take button -->
 	<button
 		on:click|stopPropagation={handleTake}
-		class="w-full py-2 bg-primary-500 hover:bg-primary-600 rounded-lg text-sm font-medium transition-colors"
+		class="w-full py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium transition-colors text-white"
 	>
 		Взять в работу
 	</button>

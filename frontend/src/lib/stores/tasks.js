@@ -1,6 +1,7 @@
 import { writable, derived } from 'svelte/store';
 import { auth } from './auth.js';
 import { browser } from '$app/environment';
+import { API_BASE } from '$lib/api.js';
 
 function createTasksStore() {
 	const { subscribe, set, update } = writable([]);
@@ -23,7 +24,7 @@ function createTasksStore() {
 				if (value) params.append(key, value);
 			});
 
-			const response = await fetch(`/api/tasks/?${params}`, {
+			const response = await fetch(`${API_BASE}/api/tasks/?${params}`, {
 				headers: getHeaders()
 			});
 			const tasks = await response.json();
@@ -31,17 +32,23 @@ function createTasksStore() {
 			return tasks;
 		},
 		create: async (taskData) => {
-			const response = await fetch('/api/tasks/', {
+			const response = await fetch(`${API_BASE}/api/tasks/`, {
 				method: 'POST',
 				headers: getHeaders(),
 				body: JSON.stringify(taskData)
 			});
+			
+			if (!response.ok) {
+				const error = await response.json();
+				throw new Error(error.detail || 'Ошибка создания задачи');
+			}
+			
 			const task = await response.json();
 			update(tasks => [...tasks, task]);
 			return task;
 		},
 		updateTask: async (taskId, taskData) => {
-			const response = await fetch(`/api/tasks/${taskId}`, {
+			const response = await fetch(`${API_BASE}/api/tasks/${taskId}`, {
 				method: 'PATCH',
 				headers: getHeaders(),
 				body: JSON.stringify(taskData)
@@ -51,17 +58,23 @@ function createTasksStore() {
 			return task;
 		},
 		changeStatus: async (taskId, status, comment = null, extra = {}) => {
-			const response = await fetch(`/api/tasks/${taskId}/status`, {
+			const response = await fetch(`${API_BASE}/api/tasks/${taskId}/status`, {
 				method: 'PATCH',
 				headers: getHeaders(),
 				body: JSON.stringify({ status, comment, ...extra })
 			});
+			
+			if (!response.ok) {
+				const error = await response.json();
+				throw new Error(error.detail || 'Ошибка изменения статуса');
+			}
+			
 			const task = await response.json();
 			update(tasks => tasks.map(t => t.id === taskId ? task : t));
 			return task;
 		},
 		undo: async (taskId) => {
-			const response = await fetch(`/api/tasks/${taskId}/undo`, {
+			const response = await fetch(`${API_BASE}/api/tasks/${taskId}/undo`, {
 				method: 'POST',
 				headers: getHeaders()
 			});
@@ -70,7 +83,7 @@ function createTasksStore() {
 			return task;
 		},
 		take: async (taskId) => {
-			const response = await fetch(`/api/tasks/${taskId}/take`, {
+			const response = await fetch(`${API_BASE}/api/tasks/${taskId}/take`, {
 				method: 'POST',
 				headers: getHeaders()
 			});
@@ -79,7 +92,7 @@ function createTasksStore() {
 			return task;
 		},
 		delete: async (taskId) => {
-			await fetch(`/api/tasks/${taskId}`, {
+			await fetch(`${API_BASE}/api/tasks/${taskId}`, {
 				method: 'DELETE',
 				headers: getHeaders()
 			});

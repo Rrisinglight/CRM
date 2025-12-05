@@ -146,9 +146,9 @@
 </script>
 
 <div class="relative">
-	<div class="flex items-center gap-2 px-4 py-3 bg-surface-700 rounded-lg border border-surface-600 focus-within:border-primary-500">
+	<div class="flex items-center gap-2 px-4 py-3 bg-white rounded-lg border border-gray-300 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-100 shadow-sm">
 		<!-- Search icon -->
-		<svg class="w-5 h-5 text-surface-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+		<svg class="w-5 h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
 		</svg>
 
@@ -160,7 +160,7 @@
 					<button
 						type="button"
 						on:click={() => removeToken(index)}
-						class="ml-1 hover:text-white"
+						class="ml-1 hover:text-gray-800"
 					>
 						×
 					</button>
@@ -175,7 +175,7 @@
 				on:keydown={handleKeydown}
 				on:blur={() => setTimeout(() => showSuggestions = false, 200)}
 				placeholder={tokens.length === 0 ? 'Поиск... (@сотрудник, #СМИ, автор:, редактор:)' : ''}
-				class="flex-1 min-w-[200px] bg-transparent outline-none text-sm"
+				class="flex-1 min-w-[200px] bg-transparent outline-none text-sm text-gray-900 placeholder-gray-400"
 			/>
 		</div>
 
@@ -184,7 +184,7 @@
 			<button
 				type="button"
 				on:click={clearAll}
-				class="p-1 hover:bg-surface-600 rounded transition-colors"
+				class="p-1 hover:bg-gray-100 rounded transition-colors text-gray-500"
 			>
 				<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -195,22 +195,22 @@
 
 	<!-- Suggestions dropdown -->
 	{#if showSuggestions && suggestions.length > 0}
-		<div class="absolute top-full left-0 right-0 mt-1 bg-surface-700 border border-surface-600 rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto">
-			<div class="px-3 py-2 text-xs text-surface-400 border-b border-surface-600">
+		<div class="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto">
+			<div class="px-3 py-2 text-xs text-gray-500 border-b border-gray-200">
 				{activeOperator?.label || 'Подсказки'}
 			</div>
 			{#each suggestions as item}
 				<button
 					type="button"
 					on:click={() => selectSuggestion(item)}
-					class="w-full px-3 py-2 text-left hover:bg-surface-600 transition-colors flex items-center gap-2"
+					class="w-full px-3 py-2 text-left hover:bg-gray-100 transition-colors flex items-center gap-2 text-gray-700"
 				>
 					{#if item.type === 'user'}
-						<div class="w-6 h-6 rounded-full bg-primary-500/50 flex items-center justify-center text-xs">
+						<div class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-xs">
 							{item.name[0]}
 						</div>
 					{:else if item.type === 'media'}
-						<div class="w-6 h-6 rounded bg-purple-500/50 flex items-center justify-center text-xs">
+						<div class="w-6 h-6 rounded bg-purple-100 text-purple-700 flex items-center justify-center text-xs">
 							#
 						</div>
 					{/if}

@@ -46,7 +46,7 @@
 			bind:value={search}
 			on:keyup={(e) => e.key === 'Enter' && loadArchive()}
 			placeholder="Поиск по названию, описанию..."
-			class="w-full px-4 py-3 bg-surface-700 border border-surface-600 rounded-lg focus:outline-none focus:border-primary-500"
+			class="w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:border-primary-500"
 		/>
 	</div>
 
@@ -55,13 +55,13 @@
 			<div class="animate-spin w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full"></div>
 		</div>
 	{:else if tasks.length === 0}
-		<div class="text-center py-20 text-surface-400">
+		<div class="text-center py-20 text-gray-500">
 			Архив пуст
 		</div>
 	{:else}
-		<div class="bg-surface-800 rounded-lg overflow-hidden">
+		<div class="bg-white rounded-lg overflow-hidden">
 			<table class="w-full">
-				<thead class="bg-surface-700">
+				<thead class="bg-gray-100">
 					<tr>
 						<th class="text-left px-4 py-3 font-medium">Задача</th>
 						<th class="text-left px-4 py-3 font-medium">Клиент</th>
@@ -76,7 +76,7 @@
 							<td class="px-4 py-3">
 								<div class="font-medium">{task.title}</div>
 								{#if task.description}
-									<div class="text-sm text-surface-400 truncate max-w-xs">{task.description}</div>
+									<div class="text-sm text-gray-500 truncate max-w-xs">{task.description}</div>
 								{/if}
 							</td>
 							<td class="px-4 py-3">
@@ -99,7 +99,7 @@
 									{task.author.first_name} {task.author.last_name}
 								{/if}
 							</td>
-							<td class="px-4 py-3 text-surface-400">
+							<td class="px-4 py-3 text-gray-500">
 								{formatDate(task.publication_date || task.status_changed_at)}
 							</td>
 						</tr>

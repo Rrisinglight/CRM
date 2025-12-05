@@ -75,7 +75,8 @@
 			<select
 				bind:value={period}
 				on:change={handlePeriodChange}
-				class="px-4 py-2 bg-surface-700 border border-surface-600 rounded-lg"
+				class="px-4 py-2 pr-8 bg-gray-100 border border-gray-300 rounded-lg appearance-none bg-no-repeat cursor-pointer"
+				style="background-image: url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%236b7280%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e'); background-position: right 0.5rem center; background-size: 1.25rem;"
 			>
 				{#each Object.entries(periodLabels) as [value, label]}
 					<option {value}>{label}</option>
@@ -85,7 +86,8 @@
 			<select
 				bind:value={comparePeriod}
 				on:change={handlePeriodChange}
-				class="px-4 py-2 bg-surface-700 border border-surface-600 rounded-lg"
+				class="px-4 py-2 pr-8 bg-gray-100 border border-gray-300 rounded-lg appearance-none bg-no-repeat cursor-pointer"
+				style="background-image: url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%236b7280%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e'); background-position: right 0.5rem center; background-size: 1.25rem;"
 			>
 				<option value="">Сравнить с...</option>
 				{#each Object.entries(periodLabels) as [value, label]}
@@ -102,27 +104,27 @@
 	{:else}
 		<!-- Summary Cards -->
 		<div class="grid grid-cols-4 gap-4 mb-8">
-			<div class="bg-surface-800 rounded-lg p-6">
+			<div class="bg-white rounded-lg p-6">
 				<div class="text-3xl font-bold text-blue-400">{summary?.wip || 0}</div>
-				<div class="text-sm text-surface-400 mt-1">Задач в работе</div>
+				<div class="text-sm text-gray-500 mt-1">Задач в работе</div>
 			</div>
-			<div class="bg-surface-800 rounded-lg p-6">
+			<div class="bg-white rounded-lg p-6">
 				<div class="text-3xl font-bold text-red-400">{summary?.overdue || 0}</div>
-				<div class="text-sm text-surface-400 mt-1">Просрочено</div>
+				<div class="text-sm text-gray-500 mt-1">Просрочено</div>
 			</div>
-			<div class="bg-surface-800 rounded-lg p-6">
+			<div class="bg-white rounded-lg p-6">
 				<div class="text-3xl font-bold text-purple-400">{summary?.editor_review || 0}</div>
-				<div class="text-sm text-surface-400 mt-1">На проверке</div>
+				<div class="text-sm text-gray-500 mt-1">На проверке</div>
 			</div>
-			<div class="bg-surface-800 rounded-lg p-6">
+			<div class="bg-white rounded-lg p-6">
 				<div class="text-3xl font-bold text-green-400">{summary?.published || 0}</div>
-				<div class="text-sm text-surface-400 mt-1">Публикаций</div>
+				<div class="text-sm text-gray-500 mt-1">Публикаций</div>
 			</div>
 		</div>
 
 		<div class="grid grid-cols-2 gap-8">
 			<!-- Stages breakdown -->
-			<div class="bg-surface-800 rounded-lg p-6">
+			<div class="bg-white rounded-lg p-6">
 				<h3 class="text-lg font-semibold mb-4">Задачи по этапам</h3>
 				{#if stages?.stages}
 					{@const maxStage = Math.max(...Object.values(stages.stages))}
@@ -133,7 +135,7 @@
 									<span class="capitalize">{stage.replace('_', ' ')}</span>
 									<span>{count}</span>
 								</div>
-								<div class="h-2 bg-surface-700 rounded-full overflow-hidden">
+								<div class="h-2 bg-gray-100 rounded-full overflow-hidden">
 									<div 
 										class="h-full bg-primary-500 rounded-full transition-all duration-500"
 										style="width: {getBarWidth(count, maxStage)}%"
@@ -146,7 +148,7 @@
 			</div>
 
 			<!-- No delay percentage -->
-			<div class="bg-surface-800 rounded-lg p-6">
+			<div class="bg-white rounded-lg p-6">
 				<h3 class="text-lg font-semibold mb-4">% без просрочек</h3>
 				{#if stages?.stages_no_delay_percent}
 					<div class="space-y-3">
@@ -158,7 +160,7 @@
 										{percent.toFixed(0)}%
 									</span>
 								</div>
-								<div class="h-2 bg-surface-700 rounded-full overflow-hidden">
+								<div class="h-2 bg-gray-100 rounded-full overflow-hidden">
 									<div 
 										class="h-full rounded-full transition-all duration-500"
 										class:bg-green-500={percent >= 80}
@@ -174,7 +176,7 @@
 			</div>
 
 			<!-- Publications timeline -->
-			<div class="bg-surface-800 rounded-lg p-6">
+			<div class="bg-white rounded-lg p-6">
 				<h3 class="text-lg font-semibold mb-4">Публикации за период</h3>
 				{#if publications?.publications && publications.publications.length > 0}
 					{@const maxPub = Math.max(...publications.publications.map(p => p.count))}
@@ -189,28 +191,28 @@
 							</div>
 						{/each}
 					</div>
-					<div class="flex justify-between text-xs text-surface-400 mt-2">
+					<div class="flex justify-between text-xs text-gray-500 mt-2">
 						<span>{publications.publications[0]?.date}</span>
 						<span>{publications.publications[publications.publications.length - 1]?.date}</span>
 					</div>
 				{:else}
-					<div class="text-surface-400 text-center py-8">Нет данных за период</div>
+					<div class="text-gray-500 text-center py-8">Нет данных за период</div>
 				{/if}
 			</div>
 
 			<!-- Roles workload -->
-			<div class="bg-surface-800 rounded-lg p-6">
+			<div class="bg-white rounded-lg p-6">
 				<h3 class="text-lg font-semibold mb-4">Нагрузка по ролям</h3>
 				<div class="space-y-4">
 					<div>
-						<h4 class="text-sm text-surface-400 mb-2">Авторы</h4>
+						<h4 class="text-sm text-gray-500 mb-2">Авторы</h4>
 						{#if roles?.authors && roles.authors.length > 0}
 							{@const maxAuthor = Math.max(...roles.authors.map(a => a.total))}
 							<div class="space-y-2">
 								{#each roles.authors.slice(0, 5) as author}
 									<div class="flex items-center gap-2">
 										<div class="w-20 text-xs truncate">{author.user_id.slice(0, 8)}</div>
-										<div class="flex-1 h-4 bg-surface-700 rounded-full overflow-hidden">
+										<div class="flex-1 h-4 bg-gray-100 rounded-full overflow-hidden">
 											<div 
 												class="h-full bg-blue-500 rounded-full"
 												style="width: {getBarWidth(author.total, maxAuthor)}%"
@@ -221,19 +223,19 @@
 								{/each}
 							</div>
 						{:else}
-							<div class="text-surface-400 text-sm">Нет данных</div>
+							<div class="text-gray-500 text-sm">Нет данных</div>
 						{/if}
 					</div>
 
 					<div>
-						<h4 class="text-sm text-surface-400 mb-2">Редакторы</h4>
+						<h4 class="text-sm text-gray-500 mb-2">Редакторы</h4>
 						{#if roles?.editors && roles.editors.length > 0}
 							{@const maxEditor = Math.max(...roles.editors.map(e => e.total))}
 							<div class="space-y-2">
 								{#each roles.editors.slice(0, 5) as editor}
 									<div class="flex items-center gap-2">
 										<div class="w-20 text-xs truncate">{editor.user_id.slice(0, 8)}</div>
-										<div class="flex-1 h-4 bg-surface-700 rounded-full overflow-hidden">
+										<div class="flex-1 h-4 bg-gray-100 rounded-full overflow-hidden">
 											<div 
 												class="h-full bg-purple-500 rounded-full"
 												style="width: {getBarWidth(editor.total, maxEditor)}%"
@@ -244,7 +246,7 @@
 								{/each}
 							</div>
 						{:else}
-							<div class="text-surface-400 text-sm">Нет данных</div>
+							<div class="text-gray-500 text-sm">Нет данных</div>
 						{/if}
 					</div>
 				</div>
@@ -252,12 +254,12 @@
 		</div>
 
 		<!-- Calendar heatmap -->
-		<div class="bg-surface-800 rounded-lg p-6 mt-8">
+		<div class="bg-white rounded-lg p-6 mt-8">
 			<h3 class="text-lg font-semibold mb-4">Календарь публикаций (последний месяц)</h3>
 			{#if calendar?.publications}
 				<div class="grid grid-cols-7 gap-2">
 					{#each ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'] as day}
-						<div class="text-center text-xs text-surface-400 pb-2">{day}</div>
+						<div class="text-center text-xs text-gray-500 pb-2">{day}</div>
 					{/each}
 					{#each Array(35) as _, i}
 						{@const date = new Date(Date.now() - (34 - i) * 24 * 60 * 60 * 1000)}
@@ -265,7 +267,7 @@
 						{@const count = calendar.publications[dateStr] || 0}
 						<div 
 							class="aspect-square rounded flex items-center justify-center text-xs transition-colors"
-							class:bg-surface-700={count === 0}
+							class:bg-gray-100={count === 0}
 							class:bg-green-900={count === 1}
 							class:bg-green-700={count === 2}
 							class:bg-green-500={count >= 3}

@@ -1,6 +1,7 @@
 <script>
 	import { goto } from '$app/navigation';
-	import { auth, tasks } from '$lib/stores';
+	import { auth } from '$lib/stores';
+	import { API_BASE } from '$lib/api.js';
 
 	let formData = {
 		title: '',
@@ -22,8 +23,8 @@
 	async function loadData() {
 		try {
 			const [clientsRes, mediaRes] = await Promise.all([
-				fetch('/api/clients/', { headers: { 'Authorization': `Bearer ${$auth.token}` } }),
-				fetch('/api/media/', { headers: { 'Authorization': `Bearer ${$auth.token}` } })
+				fetch(`${API_BASE}/api/clients/`, { headers: { 'Authorization': `Bearer ${$auth.token}` } }),
+				fetch(`${API_BASE}/api/media/`, { headers: { 'Authorization': `Bearer ${$auth.token}` } })
 			]);
 			clients = await clientsRes.json();
 			mediaList = await mediaRes.json();
@@ -37,24 +38,83 @@
 	async function handleSubmit() {
 		error = '';
 
+		// Validation
 		if (!formData.client_id) {
 			error = 'Выберите клиента';
+			return;
+		}
+
+		if (!formData.title.trim()) {
+			error = 'Введите заголовок задачи';
+			return;
+		}
+
+		// Validate URLs if provided
+		if (formData.google_doc_url && !isValidUrl(formData.google_doc_url)) {
+			error = 'Некорректная ссылка на Google Doc';
+			return;
+		}
+
+		if (formData.google_forms_url && !isValidUrl(formData.google_forms_url)) {
+			error = 'Некорректная ссылка на Google Forms';
 			return;
 		}
 
 		loading = true;
 
 		try {
-			const task = await tasks.create({
-				...formData,
-				media_id: formData.media_id || null
+			const payload = {
+				client_id: formData.client_id,
+				title: formData.title.trim(),
+				description: formData.description.trim() || null,
+				task_type: formData.task_type,
+				language: formData.language,
+				media_id: formData.media_id || null,
+				google_doc_url: formData.google_doc_url.trim() || null,
+				google_forms_url: formData.google_forms_url.trim() || null
+			};
+
+			const response = await fetch(`${API_BASE}/api/tasks/`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': `Bearer ${$auth.token}`
+				},
+				body: JSON.stringify(payload)
 			});
+
+			if (!response.ok) {
+				const data = await response.json().catch(() => ({}));
+				if (data.detail) {
+					if (typeof data.detail === 'string') {
+						throw new Error(data.detail);
+					} else if (Array.isArray(data.detail)) {
+						// Pydantic validation errors
+						const messages = data.detail.map(err => {
+							const field = err.loc?.slice(-1)[0] || 'поле';
+							return `${field}: ${err.msg}`;
+						});
+						throw new Error(messages.join(', '));
+					}
+				}
+				throw new Error('Не удалось создать задачу');
+			}
+
 			goto('/tasks');
 		} catch (e) {
-			error = 'Ошибка создания задачи';
+			error = e.message || 'Ошибка создания задачи';
 		}
 
 		loading = false;
+	}
+
+	function isValidUrl(string) {
+		try {
+			new URL(string);
+			return true;
+		} catch (_) {
+			return false;
+		}
 	}
 </script>
 
@@ -64,7 +124,7 @@
 
 <div class="p-8 max-w-2xl mx-auto">
 	<div class="flex items-center gap-4 mb-8">
-		<a href="/tasks" class="p-2 hover:bg-surface-700 rounded-lg transition-colors">
+		<a href="/tasks" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
 			<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
 			</svg>
@@ -85,7 +145,8 @@
 			<select
 				bind:value={formData.client_id}
 				required
-				class="w-full px-4 py-3 bg-surface-700 border border-surface-600 rounded-lg focus:outline-none focus:border-primary-500"
+				class="w-full px-4 py-3 pr-10 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:border-primary-500 appearance-none bg-no-repeat cursor-pointer"
+				style="background-image: url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%236b7280%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e'); background-position: right 0.75rem center; background-size: 1.25rem;"
 			>
 				<option value="">Выберите клиента</option>
 				{#each clients as client}
@@ -102,7 +163,7 @@
 				bind:value={formData.title}
 				required
 				placeholder="ФИ клиента или название задачи"
-				class="w-full px-4 py-3 bg-surface-700 border border-surface-600 rounded-lg focus:outline-none focus:border-primary-500"
+				class="w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:border-primary-500"
 			/>
 		</div>
 
@@ -113,7 +174,7 @@
 				bind:value={formData.description}
 				rows="3"
 				placeholder="Краткое описание задачи..."
-				class="w-full px-4 py-3 bg-surface-700 border border-surface-600 rounded-lg focus:outline-none focus:border-primary-500 resize-none"
+				class="w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:border-primary-500 resize-none"
 			></textarea>
 		</div>
 
@@ -123,7 +184,8 @@
 				<label class="block text-sm font-medium mb-2">Тип задачи</label>
 				<select
 					bind:value={formData.task_type}
-					class="w-full px-4 py-3 bg-surface-700 border border-surface-600 rounded-lg focus:outline-none focus:border-primary-500"
+					class="w-full px-4 py-3 pr-10 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:border-primary-500 appearance-none bg-no-repeat cursor-pointer"
+					style="background-image: url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%236b7280%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e'); background-position: right 0.75rem center; background-size: 1.25rem;"
 				>
 					<option value="article">Статья для СМИ</option>
 					<option value="recommendation">Рекомендательное письмо</option>
@@ -134,7 +196,8 @@
 				<label class="block text-sm font-medium mb-2">Язык</label>
 				<select
 					bind:value={formData.language}
-					class="w-full px-4 py-3 bg-surface-700 border border-surface-600 rounded-lg focus:outline-none focus:border-primary-500"
+					class="w-full px-4 py-3 pr-10 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:border-primary-500 appearance-none bg-no-repeat cursor-pointer"
+					style="background-image: url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%236b7280%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e'); background-position: right 0.75rem center; background-size: 1.25rem;"
 				>
 					<option value="RU">🇷🇺 Русский</option>
 					<option value="EN">🇬🇧 English</option>
@@ -147,7 +210,8 @@
 			<label class="block text-sm font-medium mb-2">СМИ</label>
 			<select
 				bind:value={formData.media_id}
-				class="w-full px-4 py-3 bg-surface-700 border border-surface-600 rounded-lg focus:outline-none focus:border-primary-500"
+				class="w-full px-4 py-3 pr-10 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:border-primary-500 appearance-none bg-no-repeat cursor-pointer"
+				style="background-image: url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%236b7280%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e'); background-position: right 0.75rem center; background-size: 1.25rem;"
 			>
 				<option value="">Не выбрано</option>
 				{#each mediaList as media}
@@ -164,7 +228,7 @@
 					type="url"
 					bind:value={formData.google_doc_url}
 					placeholder="https://docs.google.com/..."
-					class="w-full px-4 py-3 bg-surface-700 border border-surface-600 rounded-lg focus:outline-none focus:border-primary-500"
+					class="w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:border-primary-500"
 				/>
 			</div>
 			<div>
@@ -173,20 +237,20 @@
 					type="url"
 					bind:value={formData.google_forms_url}
 					placeholder="https://docs.google.com/forms/..."
-					class="w-full px-4 py-3 bg-surface-700 border border-surface-600 rounded-lg focus:outline-none focus:border-primary-500"
+					class="w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:border-primary-500"
 				/>
 			</div>
 		</div>
 
 		<!-- Actions -->
 		<div class="flex gap-4 pt-4">
-			<a href="/tasks" class="flex-1 py-3 text-center border border-surface-600 hover:bg-surface-700 rounded-lg transition-colors">
+			<a href="/tasks" class="flex-1 py-3 text-center border border-gray-300 hover:bg-gray-100 rounded-lg transition-colors">
 				Отмена
 			</a>
 			<button
 				type="submit"
 				disabled={loading}
-				class="flex-1 py-3 bg-primary-500 hover:bg-primary-600 disabled:opacity-50 rounded-lg font-medium transition-colors"
+				class="flex-1 py-3 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 rounded-lg font-medium transition-colors text-white"
 			>
 				{#if loading}
 					Создание...

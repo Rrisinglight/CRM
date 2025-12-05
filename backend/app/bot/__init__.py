@@ -3,38 +3,38 @@ Telegram Bot module for CRM notifications.
 
 Usage:
     from app.bot import (
-        bot,
-        send_overdue_notification,
-        send_followup_reminder,
-        send_resume_reminder,
-        send_periodic_report,
-        send_new_task_notification,
-        get_user_avatar_url,
+        get_bot,
+        notify_overdue,
+        notify_followup,
+        notify_resume,
+        notify_new_task,
+        send_report,
+        get_avatar_url,
     )
 """
 
 from app.bot.telegram_bot import (
-    bot,
-    CRMBot,
-    send_overdue_notification,
-    send_followup_reminder,
-    send_resume_reminder,
-    send_periodic_report,
-    send_new_task_notification,
-    get_user_avatar_url,
+    get_bot,
+    CRMTelegramBot,
+    notify_overdue,
+    notify_followup,
+    notify_resume,
+    notify_new_task,
+    send_report,
+    get_avatar_url,
 )
 
 from app.bot.scheduler import scheduler, NotificationScheduler
 
 __all__ = [
-    "bot",
-    "CRMBot",
+    "get_bot",
+    "CRMTelegramBot",
     "scheduler",
     "NotificationScheduler",
-    "send_overdue_notification",
-    "send_followup_reminder",
-    "send_resume_reminder",
-    "send_periodic_report",
-    "send_new_task_notification",
-    "get_user_avatar_url",
+    "notify_overdue",
+    "notify_followup",
+    "notify_resume",
+    "notify_new_task",
+    "send_report",
+    "get_avatar_url",
 ]

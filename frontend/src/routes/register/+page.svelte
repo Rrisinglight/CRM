@@ -1,5 +1,6 @@
 <script>
 	import { goto } from '$app/navigation';
+	import { api } from '$lib/api.js';
 
 	let formData = {
 		email: '',
@@ -12,21 +13,94 @@
 	};
 	let error = '';
 	let loading = false;
+	let errors = {
+		first_name: '',
+		last_name: '',
+		email: '',
+		password: '',
+		confirmPassword: '',
+		phone: ''
+	};
 
-	async function handleSubmit() {
-		error = '';
+	function validateEmail(email) {
+		const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		return re.test(email);
+	}
 
-		if (formData.password !== formData.confirmPassword) {
-			error = 'Пароли не совпадают';
-			return;
+	function validatePhone(phone) {
+		if (!phone) return true;
+		const re = /^[\d\s\-+()]+$/;
+		return re.test(phone) && phone.replace(/\D/g, '').length >= 10;
+	}
+
+	function validateForm() {
+		errors = {
+			first_name: '',
+			last_name: '',
+			email: '',
+			password: '',
+			confirmPassword: '',
+			phone: ''
+		};
+		let isValid = true;
+
+		if (!formData.first_name.trim()) {
+			errors.first_name = 'Имя обязательно';
+			isValid = false;
+		} else if (formData.first_name.length < 2) {
+			errors.first_name = 'Минимум 2 символа';
+			isValid = false;
 		}
 
+		if (!formData.last_name.trim()) {
+			errors.last_name = 'Фамилия обязательна';
+			isValid = false;
+		} else if (formData.last_name.length < 2) {
+			errors.last_name = 'Минимум 2 символа';
+			isValid = false;
+		}
+
+		if (!formData.email.trim()) {
+			errors.email = 'Email обязателен';
+			isValid = false;
+		} else if (!validateEmail(formData.email)) {
+			errors.email = 'Введите корректный email';
+			isValid = false;
+		}
+
+		if (!formData.password) {
+			errors.password = 'Пароль обязателен';
+			isValid = false;
+		} else if (formData.password.length < 6) {
+			errors.password = 'Минимум 6 символов';
+			isValid = false;
+		}
+
+		if (!formData.confirmPassword) {
+			errors.confirmPassword = 'Подтвердите пароль';
+			isValid = false;
+		} else if (formData.password !== formData.confirmPassword) {
+			errors.confirmPassword = 'Пароли не совпадают';
+			isValid = false;
+		}
+
+		if (formData.phone && !validatePhone(formData.phone)) {
+			errors.phone = 'Введите корректный номер телефона';
+			isValid = false;
+		}
+
+		return isValid;
+	}
+
+	async function handleSubmit() {
+		if (!validateForm()) return;
+
+		error = '';
 		loading = true;
 
 		try {
-			const response = await fetch('/api/auth/register', {
+			const response = await api('/api/auth/register', {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
 					email: formData.email,
 					password: formData.password,
@@ -51,100 +125,116 @@
 	}
 </script>
 
-<div class="min-h-screen flex items-center justify-center p-4">
+<div class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-blue-50 to-indigo-100">
 	<div class="w-full max-w-md">
-		<div class="bg-surface-800 rounded-xl p-8 shadow-xl">
-			<h1 class="text-2xl font-bold text-center mb-8">Регистрация</h1>
+		<div class="bg-white rounded-xl p-8 shadow-xl border border-gray-200">
+			<h1 class="text-2xl font-bold text-center mb-8 text-gray-800">Регистрация</h1>
 
 			<form on:submit|preventDefault={handleSubmit} class="space-y-4">
 				{#if error}
-					<div class="p-3 bg-red-500/20 border border-red-500/50 rounded-lg text-red-400 text-sm">
+					<div class="p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
 						{error}
 					</div>
 				{/if}
 
 				<div class="grid grid-cols-2 gap-4">
 					<div>
-						<label for="first_name" class="block text-sm font-medium mb-2">Имя *</label>
+						<label for="first_name" class="block text-sm font-medium mb-2 text-gray-700">Имя *</label>
 						<input
 							id="first_name"
 							type="text"
 							bind:value={formData.first_name}
-							required
-							class="w-full px-4 py-3 bg-surface-700 border border-surface-600 rounded-lg focus:outline-none focus:border-primary-500"
+							class="w-full px-4 py-3 bg-gray-50 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-gray-900 placeholder-gray-400 {errors.first_name ? 'border-red-400' : 'border-gray-300'}"
 						/>
+						{#if errors.first_name}
+							<p class="mt-1 text-xs text-red-500">{errors.first_name}</p>
+						{/if}
 					</div>
 					<div>
-						<label for="last_name" class="block text-sm font-medium mb-2">Фамилия *</label>
+						<label for="last_name" class="block text-sm font-medium mb-2 text-gray-700">Фамилия *</label>
 						<input
 							id="last_name"
 							type="text"
 							bind:value={formData.last_name}
-							required
-							class="w-full px-4 py-3 bg-surface-700 border border-surface-600 rounded-lg focus:outline-none focus:border-primary-500"
+							class="w-full px-4 py-3 bg-gray-50 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-gray-900 placeholder-gray-400 {errors.last_name ? 'border-red-400' : 'border-gray-300'}"
 						/>
+						{#if errors.last_name}
+							<p class="mt-1 text-xs text-red-500">{errors.last_name}</p>
+						{/if}
 					</div>
 				</div>
 
 				<div>
-					<label for="email" class="block text-sm font-medium mb-2">Email *</label>
+					<label for="email" class="block text-sm font-medium mb-2 text-gray-700">Email *</label>
 					<input
 						id="email"
 						type="email"
 						bind:value={formData.email}
-						required
-						class="w-full px-4 py-3 bg-surface-700 border border-surface-600 rounded-lg focus:outline-none focus:border-primary-500"
+						class="w-full px-4 py-3 bg-gray-50 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-gray-900 placeholder-gray-400 {errors.email ? 'border-red-400' : 'border-gray-300'}"
+						placeholder="your@email.com"
 					/>
+					{#if errors.email}
+						<p class="mt-1 text-xs text-red-500">{errors.email}</p>
+					{/if}
 				</div>
 
 				<div>
-					<label for="telegram" class="block text-sm font-medium mb-2">Telegram</label>
+					<label for="telegram" class="block text-sm font-medium mb-2 text-gray-700">Telegram</label>
 					<input
 						id="telegram"
 						type="text"
 						bind:value={formData.telegram_username}
-						placeholder="username"
-						class="w-full px-4 py-3 bg-surface-700 border border-surface-600 rounded-lg focus:outline-none focus:border-primary-500"
+						placeholder="@username"
+						class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-gray-900 placeholder-gray-400"
 					/>
 				</div>
 
 				<div>
-					<label for="phone" class="block text-sm font-medium mb-2">Телефон</label>
+					<label for="phone" class="block text-sm font-medium mb-2 text-gray-700">Телефон</label>
 					<input
 						id="phone"
 						type="tel"
 						bind:value={formData.phone}
-						class="w-full px-4 py-3 bg-surface-700 border border-surface-600 rounded-lg focus:outline-none focus:border-primary-500"
+						placeholder="+7 (999) 123-45-67"
+						class="w-full px-4 py-3 bg-gray-50 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-gray-900 placeholder-gray-400 {errors.phone ? 'border-red-400' : 'border-gray-300'}"
 					/>
+					{#if errors.phone}
+						<p class="mt-1 text-xs text-red-500">{errors.phone}</p>
+					{/if}
 				</div>
 
 				<div>
-					<label for="password" class="block text-sm font-medium mb-2">Пароль *</label>
+					<label for="password" class="block text-sm font-medium mb-2 text-gray-700">Пароль *</label>
 					<input
 						id="password"
 						type="password"
 						bind:value={formData.password}
-						required
-						minlength="6"
-						class="w-full px-4 py-3 bg-surface-700 border border-surface-600 rounded-lg focus:outline-none focus:border-primary-500"
+						placeholder="Минимум 6 символов"
+						class="w-full px-4 py-3 bg-gray-50 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-gray-900 placeholder-gray-400 {errors.password ? 'border-red-400' : 'border-gray-300'}"
 					/>
+					{#if errors.password}
+						<p class="mt-1 text-xs text-red-500">{errors.password}</p>
+					{/if}
 				</div>
 
 				<div>
-					<label for="confirmPassword" class="block text-sm font-medium mb-2">Подтвердите пароль *</label>
+					<label for="confirmPassword" class="block text-sm font-medium mb-2 text-gray-700">Подтвердите пароль *</label>
 					<input
 						id="confirmPassword"
 						type="password"
 						bind:value={formData.confirmPassword}
-						required
-						class="w-full px-4 py-3 bg-surface-700 border border-surface-600 rounded-lg focus:outline-none focus:border-primary-500"
+						placeholder="Повторите пароль"
+						class="w-full px-4 py-3 bg-gray-50 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-gray-900 placeholder-gray-400 {errors.confirmPassword ? 'border-red-400' : 'border-gray-300'}"
 					/>
+					{#if errors.confirmPassword}
+						<p class="mt-1 text-xs text-red-500">{errors.confirmPassword}</p>
+					{/if}
 				</div>
 
 				<button
 					type="submit"
 					disabled={loading}
-					class="w-full py-3 bg-primary-500 hover:bg-primary-600 disabled:opacity-50 rounded-lg font-medium transition-colors mt-6"
+					class="w-full py-3 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg font-medium transition-all duration-200 text-white shadow-lg hover:shadow-blue-500/30 mt-6"
 				>
 					{#if loading}
 						<span class="flex items-center justify-center gap-2">
@@ -157,10 +247,13 @@
 				</button>
 			</form>
 
-			<p class="mt-6 text-center text-sm text-surface-400">
-				Уже есть аккаунт?
-				<a href="/login" class="text-primary-400 hover:text-primary-300">Войти</a>
-			</p>
+		<p class="mt-6 text-center text-sm text-gray-500">
+			Уже есть аккаунт?
+			<a 
+				href="/login" 
+				class="text-blue-600 hover:text-blue-800 hover:underline transition-colors duration-200"
+			>Войти</a>
+		</p>
 		</div>
 	</div>
 </div>

@@ -29,7 +29,7 @@
 	$: showSidebar = $auth.isAuthenticated && !publicRoutes.includes($page.url.pathname);
 </script>
 
-<div class="min-h-screen bg-surface-900">
+<div class="min-h-screen bg-surface-100">
 	{#if showSidebar}
 		<Sidebar bind:collapsed={sidebarCollapsed} />
 		<main 

@@ -31,25 +31,29 @@
 
 <aside class="sidebar" class:collapsed>
 	<!-- Logo -->
-	<div class="p-4 border-b border-surface-700">
-		<h1 class="text-xl font-bold" class:hidden={collapsed}>
+	<div class="p-4 border-b border-gray-200">
+		<h1 class="text-xl font-bold text-gray-800" class:hidden={collapsed}>
 			CRM
 		</h1>
 		{#if collapsed}
-			<div class="w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center font-bold">
+			<div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-bold text-white">
 				C
 			</div>
 		{/if}
 	</div>
 
 	<!-- Create button -->
-	<div class="p-4">
+	<div class="p-4" class:px-3={collapsed}>
 		<a
 			href="/tasks/new"
-			class="flex items-center gap-3 px-4 py-3 bg-primary-500 hover:bg-primary-600 rounded-lg transition-colors"
+			class="flex items-center gap-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors text-white"
+			class:px-4={!collapsed}
+			class:py-3={!collapsed}
+			class:w-10={collapsed}
+			class:h-10={collapsed}
 			class:justify-center={collapsed}
 		>
-			<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+			<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 				{@html icons.plus}
 			</svg>
 			{#if !collapsed}
@@ -66,8 +70,9 @@
 				class="sidebar-item"
 				class:active={$page.url.pathname.startsWith(item.href)}
 				class:justify-center={collapsed}
+				class:px-0={collapsed}
 			>
-				<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+				<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					{@html icons[item.icon]}
 				</svg>
 				{#if !collapsed}
@@ -78,53 +83,52 @@
 	</nav>
 
 	<!-- User section -->
-	<div class="p-4 border-t border-surface-700">
+	<div class="p-4 border-t border-gray-200" class:px-3={collapsed}>
 		{#if $auth.user}
-			<div class="flex items-center gap-3 mb-4" class:justify-center={collapsed}>
-				<div class="w-8 h-8 rounded-full bg-primary-500 flex items-center justify-center text-sm font-medium flex-shrink-0">
-					{$auth.user.first_name?.[0]}{$auth.user.last_name?.[0]}
-				</div>
-				{#if !collapsed}
-					<div class="min-w-0">
-						<div class="font-medium truncate">{$auth.user.first_name} {$auth.user.last_name}</div>
-						<div class="text-xs text-surface-400 truncate">{$auth.user.email}</div>
+			{#if collapsed}
+				<!-- Collapsed: avatar and logout button below -->
+				<div class="flex justify-center mb-3">
+					<div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-sm font-medium flex-shrink-0 text-white">
+						{$auth.user.first_name?.[0]}{$auth.user.last_name?.[0]}
 					</div>
-				{/if}
-			</div>
+				</div>
+				<button
+					on:click={handleLogout}
+					class="sidebar-item justify-center px-0 text-gray-600 hover:text-gray-800 hover:bg-gray-100"
+					title="Выйти"
+				>
+					<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						{@html icons.logout}
+					</svg>
+				</button>
+			{:else}
+				<!-- Expanded: profile row with logout on the right -->
+				<div class="flex items-center gap-3">
+					<div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-sm font-medium flex-shrink-0 text-white">
+						{$auth.user.first_name?.[0]}{$auth.user.last_name?.[0]}
+					</div>
+					<div class="min-w-0 flex-1">
+						<div class="font-medium truncate text-gray-800">{$auth.user.first_name} {$auth.user.last_name}</div>
+						<div class="text-xs text-gray-500 truncate">{$auth.user.email}</div>
+					</div>
+					<button
+						on:click={handleLogout}
+						class="w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-lg text-gray-600 hover:text-gray-800 hover:bg-gray-100 transition-colors"
+						title="Выйти"
+					>
+						<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							{@html icons.logout}
+						</svg>
+					</button>
+				</div>
+			{/if}
 		{/if}
-
-		<div class="flex gap-2" class:flex-col={collapsed}>
-			<a
-				href="/settings"
-				class="sidebar-item flex-1"
-				class:justify-center={collapsed}
-			>
-				<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					{@html icons.settings}
-				</svg>
-				{#if !collapsed}
-					<span>Настройки</span>
-				{/if}
-			</a>
-			<button
-				on:click={handleLogout}
-				class="sidebar-item flex-1 text-red-400 hover:text-red-300"
-				class:justify-center={collapsed}
-			>
-				<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					{@html icons.logout}
-				</svg>
-				{#if !collapsed}
-					<span>Выйти</span>
-				{/if}
-			</button>
-		</div>
 	</div>
 
 	<!-- Collapse toggle -->
 	<button
 		on:click={() => collapsed = !collapsed}
-		class="absolute top-4 -right-3 w-6 h-6 bg-surface-700 border border-surface-600 rounded-full flex items-center justify-center hover:bg-surface-600 transition-colors"
+		class="absolute top-4 -right-3 w-6 h-6 bg-white border border-gray-300 rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors text-gray-600 shadow-sm"
 	>
 		<svg class="w-4 h-4 transition-transform" class:rotate-180={collapsed} fill="none" stroke="currentColor" viewBox="0 0 24 24">
 			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />

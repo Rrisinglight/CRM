@@ -1,5 +1,6 @@
 import { writable } from 'svelte/store';
 import { browser } from '$app/environment';
+import { API_BASE } from '$lib/api.js';
 
 function createAuthStore() {
 	const { subscribe, set, update } = writable({
@@ -15,7 +16,7 @@ function createAuthStore() {
 			formData.append('username', email);
 			formData.append('password', password);
 
-			const response = await fetch('/api/auth/login', {
+			const response = await fetch(`${API_BASE}/api/auth/login`, {
 				method: 'POST',
 				body: formData
 			});
@@ -36,7 +37,7 @@ function createAuthStore() {
 			}));
 
 			// Fetch user info
-			const userResponse = await fetch('/api/auth/me', {
+			const userResponse = await fetch(`${API_BASE}/api/auth/me`, {
 				headers: {
 					'Authorization': `Bearer ${data.access_token}`
 				}
@@ -57,7 +58,7 @@ function createAuthStore() {
 			if (!token) return false;
 
 			try {
-				const response = await fetch('/api/auth/me', {
+				const response = await fetch(`${API_BASE}/api/auth/me`, {
 					headers: {
 						'Authorization': `Bearer ${token}`
 					}

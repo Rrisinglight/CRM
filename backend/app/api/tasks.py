@@ -120,7 +120,20 @@ async def create_task(
     task = Task(**task_data.model_dump())
     db.add(task)
     await db.commit()
-    await db.refresh(task)
+    
+    # Re-fetch with relationships loaded
+    result = await db.execute(
+        select(Task)
+        .options(
+            selectinload(Task.client),
+            selectinload(Task.media),
+            selectinload(Task.author),
+            selectinload(Task.editor),
+            selectinload(Task.manager),
+        )
+        .where(Task.id == task.id)
+    )
+    task = result.scalar_one()
     
     # Broadcast to connected clients
     await manager.broadcast({
@@ -148,7 +161,20 @@ async def update_task(
         setattr(task, field, value)
     
     await db.commit()
-    await db.refresh(task)
+    
+    # Re-fetch with relationships loaded
+    result = await db.execute(
+        select(Task)
+        .options(
+            selectinload(Task.client),
+            selectinload(Task.media),
+            selectinload(Task.author),
+            selectinload(Task.editor),
+            selectinload(Task.manager),
+        )
+        .where(Task.id == task_id)
+    )
+    task = result.scalar_one()
     
     await manager.broadcast({
         "type": "task_updated",
@@ -173,6 +199,13 @@ async def change_task_status(
     old_status = task.status
     new_status = status_change.status
     
+    # Validate status transition
+    if old_status == new_status:
+        raise HTTPException(
+            status_code=400,
+            detail="Task is already in this status"
+        )
+    
     # Save undo state
     await save_undo_state(str(task_id), {
         "status": old_status.value,
@@ -185,7 +218,7 @@ async def change_task_status(
     if not is_forward and not status_change.comment:
         raise HTTPException(
             status_code=400,
-            detail="Comment required for backward or lateral moves"
+            detail="Укажите причину перемещения задачи"
         )
     
     # Update iteration on backward move
@@ -213,7 +246,20 @@ async def change_task_status(
     db.add(history)
     
     await db.commit()
-    await db.refresh(task)
+    
+    # Re-fetch with relationships loaded
+    result = await db.execute(
+        select(Task)
+        .options(
+            selectinload(Task.client),
+            selectinload(Task.media),
+            selectinload(Task.author),
+            selectinload(Task.editor),
+            selectinload(Task.manager),
+        )
+        .where(Task.id == task_id)
+    )
+    task = result.scalar_one()
     
     await manager.broadcast({
         "type": "task_status_changed",
@@ -261,7 +307,20 @@ async def undo_status_change(
         await db.delete(history_entry)
     
     await db.commit()
-    await db.refresh(task)
+    
+    # Re-fetch with relationships loaded
+    result = await db.execute(
+        select(Task)
+        .options(
+            selectinload(Task.client),
+            selectinload(Task.media),
+            selectinload(Task.author),
+            selectinload(Task.editor),
+            selectinload(Task.manager),
+        )
+        .where(Task.id == task_id)
+    )
+    task = result.scalar_one()
     
     await manager.broadcast({
         "type": "task_undo",
@@ -271,7 +330,7 @@ async def undo_status_change(
     return task
 
 
-@router.post("/{task_id}/take")
+@router.post("/{task_id}/take", response_model=TaskOut)
 async def take_task(
     task_id: UUID,
     db: AsyncSession = Depends(get_db),
@@ -284,7 +343,7 @@ async def take_task(
         raise HTTPException(status_code=404, detail="Task not found")
     
     if task.status != TaskStatus.NEW:
-        raise HTTPException(status_code=400, detail="Can only take new tasks")
+        raise HTTPException(status_code=400, detail="Можно взять только новые задачи")
     
     task.author_id = current_user.id
     task.status = TaskStatus.IN_PROGRESS
@@ -302,7 +361,20 @@ async def take_task(
     db.add(history)
     
     await db.commit()
-    await db.refresh(task)
+    
+    # Re-fetch with relationships loaded
+    result = await db.execute(
+        select(Task)
+        .options(
+            selectinload(Task.client),
+            selectinload(Task.media),
+            selectinload(Task.author),
+            selectinload(Task.editor),
+            selectinload(Task.manager),
+        )
+        .where(Task.id == task_id)
+    )
+    task = result.scalar_one()
     
     await manager.broadcast({
         "type": "task_taken",

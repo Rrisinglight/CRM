@@ -10,7 +10,7 @@
 
 	<!-- Media -->
 	{#if task.media}
-		<div class="flex items-center gap-2 text-sm text-surface-300">
+		<div class="flex items-center gap-2 text-sm text-gray-600">
 			{#if task.media.logo_url}
 				<img src={task.media.logo_url} alt="" class="w-4 h-4 rounded" />
 			{/if}
@@ -49,12 +49,12 @@
 
 	<!-- Description -->
 	{#if task.description}
-		<p class="text-sm text-surface-300 line-clamp-2">{task.description}</p>
+		<p class="text-sm text-gray-600 line-clamp-2">{task.description}</p>
 	{/if}
 
 	<!-- Author -->
 	{#if task.author}
-		<div class="text-sm text-surface-400">
+		<div class="text-sm text-gray-500">
 			Автор: {task.author.first_name} {task.author.last_name}
 		</div>
 	{/if}
@@ -64,7 +64,7 @@
 		<a
 			href={task.google_doc_url}
 			target="_blank"
-			class="flex items-center gap-2 p-2 bg-surface-600/50 hover:bg-surface-600 rounded-lg text-sm transition-colors"
+			class="flex items-center gap-2 p-2 bg-gray-200/50 hover:bg-gray-200 rounded-lg text-sm transition-colors"
 			on:click|stopPropagation
 		>
 			<svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

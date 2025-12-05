@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 
 async def main():
     """Main entry point for the bot"""
-    from app.bot.telegram_bot import bot
+    from app.bot.telegram_bot import get_bot
     from app.bot.scheduler import scheduler
 
     # Signal handlers for graceful shutdown
@@ -42,9 +42,13 @@ async def main():
     for sig in (signal.SIGINT, signal.SIGTERM):
         loop.add_signal_handler(sig, signal_handler)
 
+    bot = get_bot()
+    if not bot:
+        logger.error("No Telegram bot token configured")
+        return
+
     try:
         # Initialize and start bot
-        await bot.initialize()
         await bot.start()
         logger.info("Telegram bot started successfully")
 

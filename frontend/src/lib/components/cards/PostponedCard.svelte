@@ -22,22 +22,22 @@
 
 <div class="space-y-3">
 	<!-- Client name -->
-	<h4 class="font-semibold">{task.title}</h4>
+	<h4 class="font-semibold text-gray-800">{task.title}</h4>
 
 	<!-- Postpone reason -->
 	{#if task.postpone_reason}
-		<div class="p-2 bg-red-500/10 border border-red-500/30 rounded-lg">
-			<div class="text-xs text-red-400 mb-1">Причина остановки:</div>
-			<p class="text-sm">{task.postpone_reason}</p>
+		<div class="p-2 bg-red-50 border border-red-200 rounded-lg">
+			<div class="text-xs text-red-600 mb-1">Причина остановки:</div>
+			<p class="text-sm text-gray-700">{task.postpone_reason}</p>
 		</div>
 	{/if}
 
 	<!-- Resume date -->
 	{#if task.postpone_resume_date}
-		<div class="flex items-center justify-between p-2 rounded-lg" class:bg-amber-500/10={resumeApproaching} class:bg-surface-600/50={!resumeApproaching}>
+		<div class="flex items-center justify-between p-2 rounded-lg {resumeApproaching ? 'bg-amber-50 border border-amber-200' : 'bg-gray-50'}">
 			<div>
-				<div class="text-xs text-surface-400">Дата возобновления:</div>
-				<div class="font-medium" class:text-amber-400={resumeApproaching}>
+				<div class="text-xs text-gray-500">Дата возобновления:</div>
+				<div class="font-medium text-gray-800 {resumeApproaching ? 'text-amber-600' : ''}">
 					{formatDate(task.postpone_resume_date)}
 				</div>
 			</div>
@@ -50,19 +50,19 @@
 	<!-- Responsible person -->
 	{#if task.manager}
 		<div class="flex items-center gap-2 text-sm">
-			<span class="text-surface-400">Ответственный:</span>
-			<span>{task.manager.first_name} {task.manager.last_name}</span>
+			<span class="text-gray-500">Ответственный:</span>
+			<span class="text-gray-800">{task.manager.first_name} {task.manager.last_name}</span>
 		</div>
 	{:else if task.author}
 		<div class="flex items-center gap-2 text-sm">
-			<span class="text-surface-400">Ответственный:</span>
-			<span>{task.author.first_name} {task.author.last_name}</span>
+			<span class="text-gray-500">Ответственный:</span>
+			<span class="text-gray-800">{task.author.first_name} {task.author.last_name}</span>
 		</div>
 	{/if}
 
 	<!-- Time postponed -->
 	<div class="flex justify-end">
-		<div class="flex items-center gap-1 text-xs text-surface-400">
+		<div class="flex items-center gap-1 text-xs text-gray-500">
 			<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
 			</svg>
@@ -73,7 +73,7 @@
 	<!-- Return to work button -->
 	<button
 		on:click|stopPropagation={returnToWork}
-		class="w-full py-2 bg-green-600 hover:bg-green-500 rounded-lg text-sm font-medium transition-colors"
+		class="w-full py-2 bg-green-600 hover:bg-green-700 rounded-lg text-sm font-medium transition-colors text-white"
 	>
 		Вернуть в работу
 	</button>

@@ -61,7 +61,7 @@
 
 	<!-- Sent info -->
 	{#if task.sent_to_whom || task.sent_method}
-		<div class="text-sm text-surface-300 space-y-1">
+		<div class="text-sm text-gray-600 space-y-1">
 			{#if task.sent_to_whom}
 				<div>Кому: {task.sent_to_whom}</div>
 			{/if}
@@ -73,14 +73,14 @@
 
 	<!-- Author -->
 	{#if task.author}
-		<div class="text-sm text-surface-400">
+		<div class="text-sm text-gray-500">
 			Автор: {task.author.first_name} {task.author.last_name}
 		</div>
 	{/if}
 
 	<!-- Time in media (days since sent) -->
 	<div class="flex justify-between items-center text-sm">
-		<span class="text-surface-400">В редакции:</span>
+		<span class="text-gray-500">В редакции:</span>
 		<div class="flex items-center gap-1" class:text-red-500={isOverdue}>
 			<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />

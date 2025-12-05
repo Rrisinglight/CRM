@@ -24,7 +24,7 @@
 
 <div class="flex flex-col h-full">
 	<!-- Search bar -->
-	<div class="p-4 border-b border-surface-700">
+	<div class="p-4 border-b border-gray-200 bg-white">
 		<SearchBar on:search={handleSearch} />
 	</div>
 

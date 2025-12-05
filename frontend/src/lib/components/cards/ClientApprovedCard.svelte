@@ -41,7 +41,7 @@
 	<!-- Author -->
 	{#if task.author}
 		<div class="flex items-center gap-2 text-sm">
-			<span class="text-surface-400">Автор:</span>
+			<span class="text-gray-500">Автор:</span>
 			<span>{task.author.first_name} {task.author.last_name}</span>
 			{#if task.author.telegram_username}
 				<a 
@@ -61,7 +61,7 @@
 		<a
 			href={task.google_doc_url}
 			target="_blank"
-			class="flex items-center gap-2 p-2 bg-surface-600/50 hover:bg-surface-600 rounded-lg text-sm transition-colors"
+			class="flex items-center gap-2 p-2 bg-gray-200/50 hover:bg-gray-200 rounded-lg text-sm transition-colors"
 			on:click|stopPropagation
 		>
 			<svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

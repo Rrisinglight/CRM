@@ -21,11 +21,11 @@ from app.models.task import Task, TaskStatus
 from app.models.user import User
 from app.config import get_settings
 from app.bot.telegram_bot import (
-    bot,
-    send_overdue_notification,
-    send_followup_reminder,
-    send_resume_reminder,
-    send_periodic_report,
+    get_bot,
+    notify_overdue,
+    notify_followup,
+    notify_resume,
+    send_report,
 )
 
 settings = get_settings()
@@ -116,7 +116,7 @@ class NotificationScheduler:
                     identifier = user.telegram_username or user.email if user else None
 
                 if identifier:
-                    await send_overdue_notification(
+                    await notify_overdue(
                         identifier=identifier,
                         task_title=task.title,
                         task_id=str(task.id),
@@ -162,12 +162,12 @@ class NotificationScheduler:
 
                     if identifier and task.media:
                         days = (datetime.utcnow() - task.status_changed_at).days
-                        await send_followup_reminder(
+                        await notify_followup(
                             identifier=identifier,
                             task_title=task.title,
                             task_id=str(task.id),
                             media_name=task.media.name if task.media else "Unknown",
-                            days_since_sent=days,
+                            days=days,
                             crm_url=settings.frontend_url if hasattr(settings, 'frontend_url') else "",
                         )
                         logger.info(f"Sent follow-up reminder for task {task.id}")
@@ -212,7 +212,7 @@ class NotificationScheduler:
                     identifier = user.telegram_username or user.email if user else None
 
                     if identifier:
-                        await send_resume_reminder(
+                        await notify_resume(
                             identifier=identifier,
                             task_title=task.title,
                             task_id=str(task.id),
@@ -272,7 +272,7 @@ class NotificationScheduler:
                 for user in users:
                     identifier = user.telegram_username or user.email
                     if identifier:
-                        await send_periodic_report(
+                        await send_report(
                             identifier=identifier,
                             period=period,
                             **metrics,

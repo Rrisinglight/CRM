@@ -67,19 +67,19 @@
 
 	<!-- Client gratitude -->
 	{#if task.client_gratitude}
-		<div class="p-2 bg-surface-600/50 rounded-lg italic text-sm text-surface-300">
+		<div class="p-2 bg-gray-200/50 rounded-lg italic text-sm text-gray-600">
 			"{task.client_gratitude}"
 		</div>
 	{/if}
 
 	<!-- Description -->
 	{#if task.description}
-		<p class="text-sm text-surface-400 line-clamp-2">{task.description}</p>
+		<p class="text-sm text-gray-500 line-clamp-2">{task.description}</p>
 	{/if}
 
 	<!-- Archive button -->
 	<button
-		class="w-full py-2 bg-surface-600 hover:bg-surface-500 rounded-lg text-sm transition-colors"
+		class="w-full py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-sm transition-colors"
 		on:click|stopPropagation
 	>
 		В архив

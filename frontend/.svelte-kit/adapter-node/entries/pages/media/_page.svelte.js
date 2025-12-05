@@ -1,0 +1,12 @@
+import { c as create_ssr_component, a as subscribe, d as add_attribute } from "../../../chunks/ssr.js";
+import { a as auth } from "../../../chunks/websocket.js";
+const Page = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+  let $$unsubscribe_auth;
+  $$unsubscribe_auth = subscribe(auth, (value) => value);
+  let search = "";
+  $$unsubscribe_auth();
+  return `${$$result.head += `<!-- HEAD_svelte-1mk7scx_START -->${$$result.title = `<title>СМИ | CRM</title>`, ""}<!-- HEAD_svelte-1mk7scx_END -->`, ""} <div class="p-8"><div class="flex items-center justify-between mb-8" data-svelte-h="svelte-azqcpu"><h1 class="text-2xl font-bold">СМИ</h1> <a href="/media/new" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">+ Добавить СМИ</a></div>  <div class="flex gap-4 mb-6"><input type="text" placeholder="Поиск по названию..." class="flex-1 px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:border-primary-500"${add_attribute("value", search, 0)}> <select class="px-4 py-2 pr-8 bg-gray-100 border border-gray-300 rounded-lg appearance-none bg-no-repeat bg-right cursor-pointer" style="background-image: url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%236b7280%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e'); background-position: right 0.5rem center; background-size: 1.25rem;"><option value="" data-svelte-h="svelte-1kjyuk2">Все категории</option><option value="деловое" data-svelte-h="svelte-jg38c8">Деловое</option><option value="lifestyle" data-svelte-h="svelte-1y2dmh0">Lifestyle</option><option value="IT" data-svelte-h="svelte-5s08lm">IT</option><option value="региональное" data-svelte-h="svelte-bzx2f6">Региональное</option></select> <button class="px-6 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg" data-svelte-h="svelte-y2dcer">Найти</button></div> ${`<div class="flex justify-center py-20" data-svelte-h="svelte-zif7fd"><div class="animate-spin w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full"></div></div>`}</div>`;
+});
+export {
+  Page as default
+};

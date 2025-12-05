@@ -1,0 +1,25 @@
+import { c as create_ssr_component, d as add_attribute, b as escape } from "../../../chunks/ssr.js";
+import "@sveltejs/kit/internal";
+import "../../../chunks/exports.js";
+import "../../../chunks/utils.js";
+import "@sveltejs/kit/internal/server";
+import "../../../chunks/state.svelte.js";
+const Page = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+  let formData = {
+    email: "",
+    password: "",
+    confirmPassword: "",
+    first_name: "",
+    last_name: "",
+    telegram_username: "",
+    phone: ""
+  };
+  return `<div class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-blue-50 to-indigo-100"><div class="w-full max-w-md"><div class="bg-white rounded-xl p-8 shadow-xl border border-gray-200"><h1 class="text-2xl font-bold text-center mb-8 text-gray-800" data-svelte-h="svelte-1sgetb9">Регистрация</h1> <form class="space-y-4">${``} <div class="grid grid-cols-2 gap-4"><div><label for="first_name" class="block text-sm font-medium mb-2 text-gray-700" data-svelte-h="svelte-djsez1">Имя *</label> <input id="first_name" type="text" class="${"w-full px-4 py-3 bg-gray-50 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-gray-900 placeholder-gray-400 " + escape("border-gray-300", true)}"${add_attribute("value", formData.first_name, 0)}> ${``}</div> <div><label for="last_name" class="block text-sm font-medium mb-2 text-gray-700" data-svelte-h="svelte-1q43xoa">Фамилия *</label> <input id="last_name" type="text" class="${"w-full px-4 py-3 bg-gray-50 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-gray-900 placeholder-gray-400 " + escape("border-gray-300", true)}"${add_attribute("value", formData.last_name, 0)}> ${``}</div></div> <div><label for="email" class="block text-sm font-medium mb-2 text-gray-700" data-svelte-h="svelte-oerdl8">Email *</label> <input id="email" type="email" class="${"w-full px-4 py-3 bg-gray-50 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-gray-900 placeholder-gray-400 " + escape("border-gray-300", true)}" placeholder="your@email.com"${add_attribute("value", formData.email, 0)}> ${``}</div> <div><label for="telegram" class="block text-sm font-medium mb-2 text-gray-700" data-svelte-h="svelte-ow5ne0">Telegram</label> <input id="telegram" type="text" placeholder="@username" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-gray-900 placeholder-gray-400"${add_attribute("value", formData.telegram_username, 0)}></div> <div><label for="phone" class="block text-sm font-medium mb-2 text-gray-700" data-svelte-h="svelte-1qjohks">Телефон</label> <input id="phone" type="tel" placeholder="+7 (999) 123-45-67" class="${"w-full px-4 py-3 bg-gray-50 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-gray-900 placeholder-gray-400 " + escape("border-gray-300", true)}"${add_attribute("value", formData.phone, 0)}> ${``}</div> <div><label for="password" class="block text-sm font-medium mb-2 text-gray-700" data-svelte-h="svelte-6j99c7">Пароль *</label> <input id="password" type="password" placeholder="Минимум 6 символов" class="${"w-full px-4 py-3 bg-gray-50 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-gray-900 placeholder-gray-400 " + escape("border-gray-300", true)}"${add_attribute("value", formData.password, 0)}> ${``}</div> <div><label for="confirmPassword" class="block text-sm font-medium mb-2 text-gray-700" data-svelte-h="svelte-1kl0vx4">Подтвердите пароль *</label> <input id="confirmPassword" type="password" placeholder="Повторите пароль" class="${"w-full px-4 py-3 bg-gray-50 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-gray-900 placeholder-gray-400 " + escape(
+    "border-gray-300",
+    true
+  )}"${add_attribute("value", formData.confirmPassword, 0)}> ${``}</div> <button type="submit" ${""} class="w-full py-3 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg font-medium transition-all duration-200 text-white shadow-lg hover:shadow-blue-500/30 mt-6">${`Зарегистрироваться`}</button></form> <p class="mt-6 text-center text-sm text-gray-500" data-svelte-h="svelte-xbcxeh">Уже есть аккаунт?
+			<a href="/login" class="text-blue-600 hover:text-blue-800 hover:underline transition-colors duration-200">Войти</a></p></div></div></div>`;
+});
+export {
+  Page as default
+};

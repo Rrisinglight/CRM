@@ -78,9 +78,9 @@
 	<!-- Messages -->
 	<div class="flex-1 overflow-y-auto p-4 space-y-4" bind:this={messagesContainer}>
 		{#if loading}
-			<div class="text-center text-surface-400">Загрузка...</div>
+			<div class="text-center text-gray-500">Загрузка...</div>
 		{:else if messages.length === 0}
-			<div class="text-center text-surface-400">Нет сообщений</div>
+			<div class="text-center text-gray-500">Нет сообщений</div>
 		{:else}
 			{#each messages as message, i}
 				{@const prevMessage = messages[i - 1]}
@@ -88,19 +88,19 @@
 				{@const isOwn = message.user_id === $auth.user?.id}
 
 				{#if showDate}
-					<div class="text-center text-xs text-surface-400 py-2">
+					<div class="text-center text-xs text-gray-500 py-2">
 						{formatDate(message.created_at)}
 					</div>
 				{/if}
 
 				<div class="flex gap-2" class:flex-row-reverse={isOwn}>
-					<div class="w-8 h-8 rounded-full bg-surface-600 flex items-center justify-center text-xs flex-shrink-0">
+					<div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs flex-shrink-0">
 						{message.user_id?.slice(0, 2).toUpperCase()}
 					</div>
 					<div 
 						class="max-w-[70%] px-3 py-2 rounded-lg"
 						class:bg-primary-500={isOwn}
-						class:bg-surface-600={!isOwn}
+						class:bg-gray-200={!isOwn}
 					>
 						<p class="text-sm whitespace-pre-wrap break-words">{message.text}</p>
 						<div class="text-xs mt-1 opacity-60">
@@ -113,14 +113,14 @@
 	</div>
 
 	<!-- Input -->
-	<div class="p-4 border-t border-surface-700">
+	<div class="p-4 border-t border-gray-200">
 		<div class="flex gap-2">
 			<textarea
 				bind:value={newMessage}
 				on:keydown={handleKeydown}
 				placeholder="Написать сообщение..."
 				rows="1"
-				class="flex-1 px-3 py-2 bg-surface-700 border border-surface-600 rounded-lg resize-none focus:outline-none focus:border-primary-500"
+				class="flex-1 px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg resize-none focus:outline-none focus:border-primary-500"
 			></textarea>
 			<button
 				on:click={sendMessage}

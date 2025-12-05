@@ -82,7 +82,7 @@
 </script>
 
 <div
-	class="task-card bg-surface-700 rounded-lg overflow-hidden cursor-pointer relative"
+	class="task-card bg-white rounded-lg overflow-hidden cursor-pointer relative border border-gray-200 shadow-sm"
 	class:just-moved={justMoved}
 	class:overdue={isOverdue}
 	on:click={openTaskDetail}
@@ -106,7 +106,7 @@
 	<!-- Undo button (visible for 20 seconds after move) -->
 	{#if justMoved}
 		<button
-			class="absolute top-2 right-2 p-1.5 bg-surface-600 hover:bg-surface-500 rounded-full transition-colors"
+			class="absolute top-2 right-2 p-1.5 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors text-gray-600"
 			on:click|stopPropagation={handleUndo}
 			title="Отменить перемещение"
 		>
@@ -118,7 +118,7 @@
 
 	<!-- Iteration badge -->
 	{#if task.iteration > 0}
-		<div class="absolute bottom-2 right-2 text-xs bg-amber-500/20 text-amber-400 px-1.5 py-0.5 rounded">
+		<div class="absolute bottom-2 right-2 text-xs bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded">
 			{task.iteration}
 		</div>
 	{/if}
